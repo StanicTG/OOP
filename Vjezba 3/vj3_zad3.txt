@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+int main() {
+    auto parni = [](int x) { return x % 2 == 0; };
+    auto neparni = [](int x) { return x % 2 != 0; };
+
+    auto udvostruci = [](int x) { return 2 * x; };
+    auto prepolovi = [](int x) { return x / 2; };
+
+    int suma = 0;
+    auto dodaj_u_sumu = [&](int x) { suma += x; };
+
+    int produkt = 1;
+    auto dodaj_u_produkt = [&](int x) { produkt *= x; };
+
+    int prag = 10;
+    auto dodaj_ako_veciod_praga = [prag, &suma](int x) {
+        if (x > prag) suma += x;
+    };
+
+    vector<int> brojevi = {2, 3, 10, 15};
+
+    for (int x : brojevi) {
+        cout << x << (parni(x) ? " je paran" : " je neparan") << endl;
+    }
+
+    cout << endl;
+    for (int& x : brojevi) {
+        if (parni(x)) x = prepolovi(x);
+        else x = udvostruci(x);
+    }
+
+    cout << "Niz nakon transformacije (parne prepolovljene, neparne udvostručene): ";
+    for (int x : brojevi) cout << x << " ";
+    cout << endl;
+
+    suma = 0;
+    produkt = 1;
+    for (int x : brojevi) {
+        dodaj_u_sumu(x);
+        dodaj_u_produkt(x);
+    }
+    cout << "Suma = " << suma << ", Produkt = " << produkt << endl;
+
+    suma = 0;
+    for (int x : brojevi) dodaj_ako_veciod_praga(x);
+    cout << "Suma brojeva većih od praga (" << prag << ") = " << suma << endl;
+
+    return 0;
+}

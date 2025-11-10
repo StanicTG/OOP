@@ -1,0 +1,183 @@
+1.
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void input_vector(vector<int>& v) {
+    int x;
+    cout << "Unesite brojeve (0 za kraj): ";
+    while (cin >> x && x != 0)
+        v.push_back(x);
+}
+
+void print_vector(const vector<int>& v) {
+    for (size_t i = 0; i < v.size(); ++i) {
+        cout << v[i];
+        if (i < v.size() - 1) cout << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    vector<int> brojevi;
+    input_vector(brojevi);
+    cout << "Uneseni brojevi: ";
+    print_vector(brojevi);
+    return 0;
+}
+
+
+
+2. 
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void input_vector(vector<int>& v) {
+    int x;
+    cout << "Unesite brojeve (0 za kraj): ";
+    while (cin >> x && x != 0)
+        v.push_back(x);
+}
+
+void print_vector(const vector<int>& v) {
+    for (size_t i = 0; i < v.size(); ++i) {
+        cout << v[i];
+        if (i < v.size() - 1) cout << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    vector<int> v;
+    input_vector(v);
+
+    cout << "Originalni vektor: ";
+    print_vector(v);
+
+    vector<int> unique;
+    for (int x : v)
+        if (find(unique.begin(), unique.end(), x) == unique.end())
+            unique.push_back(x);
+
+    cout << "Jedinstveni elementi: ";
+    print_vector(unique);
+
+    sort(unique.begin(), unique.end(), [](int a, int b) {
+        return abs(a) < abs(b);
+    });
+
+    cout << "Sortirani po apsolutnoj vrijednosti: ";
+    for (size_t i = 0; i < unique.size(); ++i) {
+        cout << unique[i];
+        if (i < unique.size() - 1) cout << ", ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+
+
+
+3. 
+
+#include <iostream>
+#include <string>
+#include <cctype>
+using namespace std;
+
+void fix_spaces(string& text) {
+    string result;
+    bool last_space = false;
+
+    for (size_t i = 0; i < text.size(); ++i) {
+        char c = text[i];
+
+        if (isspace(c)) {
+            if (!last_space) {
+                result += ' ';
+                last_space = true;
+            }
+        } else {
+            if ((c == ',' || c == '.') && !result.empty() && result.back() == ' ')
+                result.pop_back();
+
+            result += c;
+            last_space = false;
+
+            if (c == ',' && (i + 1 < text.size()) && text[i + 1] != ' ')
+                result += ' ';
+        }
+    }
+
+    text = result;
+}
+
+int main() {
+    string text = "Puno   razmaka ,i   tocka .";
+    cout << "Prije:  " << text << endl;
+    fix_spaces(text);
+    cout << "Poslije: " << text << endl;
+    return 0;
+}
+
+
+
+
+4. 
+
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+string word_to_pig_latin(const string& word) {
+    if (word.empty()) return word;
+    char c = tolower(word[0]);
+    string vowels = "aeiou";
+    if (vowels.find(c) != string::npos)
+        return word + "hay";
+    else
+        return word.substr(1) + word[0] + "ay";
+}
+
+int main() {
+    cout << "apple -> " << word_to_pig_latin("apple") << endl;
+    cout << "hello -> " << word_to_pig_latin("hello") << endl;
+    cout << "smile -> " << word_to_pig_latin("smile") << endl;
+    return 0;
+}
+
+
+
+
+5. 
+
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+void reverse_strings(vector<string>& words) {
+    for (auto& w : words)
+        reverse(w.begin(), w.end());
+}
+
+int main() {
+    vector<string> words = {"hello", "world", "c++"};
+    cout << "Prije: ";
+    for (auto& w : words) cout << w << " ";
+    cout << endl;
+    reverse_strings(words);
+    cout << "Poslije: ";
+    for (auto& w : words) cout << w << " ";
+    cout << endl;
+    return 0;
+}

@@ -1,0 +1,151 @@
+//Vektor cijelih brojeva
+//Novi vektor gdje su brojevi parni i veci od 10
+
+
+#include <iostream>
+#include <vector>
+#include <ctime>
+#include <cstdlib>
+#include <map>
+#include <algorithm>
+
+
+using namespace std;
+
+class Karta{
+    public:
+    int broj;
+    string zog;
+    
+    Karta(int b, string z) : broj(b), zog(z) {}
+    
+    void ispisi() const{
+        cout << broj << " " << zog;
+    }
+};
+
+class Mac{
+    public:
+    vector<Karta> karte;
+    
+    Mac(){
+        string zogovi[] = {"bastoni", "coppe", "denari", "spade"};
+        for(auto &z : zogovi){
+            for(int i = 0; i <=10; i++){
+                karte.push_back(Karta(i, z));
+            }
+        }
+    }
+    
+    void promjesaj(){
+        srand(time(0));
+        random_shuffle(karte.begin(), karte.end());
+        
+    }
+    
+    vector<Karta> podijeli(){
+        vector<Karta> ruka(karte.begin(), karte.begin() + 10);
+        karte.erase(karte.begin(), karte.begin() + 10);
+        return ruka;
+    }
+};
+
+
+class Igrac{
+    public:
+    string ime;
+    vector<Karta> ruka;
+    int bodovi;
+    
+    Igrac(string n) : ime(n), bodovi(0) {}
+    void primiKarte(vector<Karta> k){
+        ruka = k;
+    }
+    
+    void ispisiKarte() const{
+        cout << "Karte igrača " << ime << ":\n";
+        for(auto &k : ruka){
+            k.ispisi();
+            cout << endl;
+        }
+    }
+    
+    void akuzaj() {
+        map<string, vector<int>> poBoji;
+        for(auto &k : ruka)
+        poBoji[k.zog].push_back(k.broj);
+        
+        for(auto &p : poBoji){
+            vector<int> b = p.second;
+            sort(b.begin(), b.end());
+            if(find(b.begin(), b.end(), 1) != b.end() &&
+               find(b.begin(), b.end(), 2) != b.end() &&
+               find(b.begin(), b.end(), 3) != b.end()){
+                   cout<< ime << "ima Napolitanu u boji " << p.first << "(3 boda)\n";
+                   bodovi +=3;
+               }
+        }
+    }
+    
+    map<int, int> brojevi;
+    for(auto &k : ruka){
+        brojevi[k.broj]++;
+    }
+    for(auto &b : brojevi){
+        if(b.second == 3 && (b.first == 1 ||b.first == 2 || b.first == 3)){
+            cout << ime << "ima tri iste karte" << b.first << "(3 boda)\n";
+            bodovi +=3;
+        }
+        if(b.second == 4 && (b.first == 1 ||b.first == 2 || b.first == 3)){
+            cout << ime << "ima cetiri iste karte" << b.first << "(4 boda)\n";
+            bodovi +=4;
+        }
+    }
+    
+    void ispisiBodove(){
+        cout << ime << "Ukupno bodova: "<< bodovi << endl;
+    }
+};
+
+
+
+
+int main(){
+
+int brojIgraca;
+cout<<"Unesite broj igraca (2 ili 4): ";
+cin >> brojIgraca;
+
+vector<Igrac> igraci;
+for(int i = 0; i < brojIgraca; i++){
+    string ime;
+    cout << "Unesite ime igraca: " << i+1 << ": ";
+    cin >> ime;
+    igraci.push_back(Igrac(ime));
+}
+
+Mac mac;
+mac.promjesaj();
+
+for(int i = 0; i < brojIgraca; i++){
+    igraci[i].primiKarte(mac.podijeli());
+}
+    cout << "\n--- Podijeljene karte ---\n";
+    for(auto &i : igraci){
+        i.ispisiKarte();
+        cout << endl;
+    }
+
+cout << "--- Akuzacije ---\n";
+for(auto &i : igraci){
+    i.akuzaj();
+}
+
+cout << "\n--- Rezultati ---\n";
+for(auto &i : igraci){
+    i.ispisiBodove();
+}
+
+
+    return 0;
+}
